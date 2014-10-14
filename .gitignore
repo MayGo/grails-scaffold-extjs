@@ -1,2 +1,7 @@
 .classpath
 .project
+grails-scaffold-extjs-0.1.zip
+grails-scaffold-extjs-0.1.zip.sha1
+plugin.xml
+.settings/
+target/

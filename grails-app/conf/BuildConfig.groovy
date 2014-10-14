@@ -17,6 +17,8 @@ grails.project.fork = [
 ]
 
 grails.project.dependency.resolver = "maven" // or ivy
+
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -44,5 +46,6 @@ grails.project.dependency.resolution = {
               ":rest-client-builder:1.0.3") {
             export = false
         }
+	    compile ':scaffold-core:0.1'
     }
 }

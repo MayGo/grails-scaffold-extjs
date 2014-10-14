@@ -7,7 +7,7 @@ class ScaffoldExtjsGrailsPlugin {
     def pluginExcludes = [
         "grails-app/views/error.gsp"
     ]
-
+	def dependsOn = [scaffoldCore: "0.1"]
     // TODO Fill in these fields
     def title = "Scaffold Extjs Plugin" // Headline display name of the plugin
     def author = "Your name"
@@ -41,8 +41,8 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
-    }
+		templatesLocator(grails.plugin.scaffold.extjs.DefaultTemplatesLocator)
+	}
 
     def doWithDynamicMethods = { ctx ->
         // TODO Implement registering dynamic methods to classes (optional)
