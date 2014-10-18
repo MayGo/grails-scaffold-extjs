@@ -19,7 +19,7 @@ class ${className}Controller extends RestfulController{
 		
 		// Parses params.query for dynamic search and uses params.offset/params.max for paging. Returns [list: results, total: results.totalCount] for paging grid.
 		// This is here so running demo works right away. Should be replaced with own service, eg: ${domainClass.propertyName}Service.list(params)
-		def listObject = ExtjsScaffoldingService.parseParamsAndRetrieveListAndCount(resource, params)
+		def listObject = ScaffoldCoreService.parseParamsAndRetrieveListAndCount(resource, params)
 		respond listObject as Object
 	}
 }

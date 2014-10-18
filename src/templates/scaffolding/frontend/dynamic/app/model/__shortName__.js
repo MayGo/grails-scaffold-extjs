@@ -17,7 +17,7 @@ Ext.define('${appName}.model.${className}', {
 		} else {
 			renderFieldForProperty(p, domainClass)
 		}
-		List basenames = (config.grails.plugin.extjsscaffolding.basenames)?:['name', 'username', 'authority']
+		List basenames = config.grails.plugin.scaffold.core.basenames
 		if(p.name in basenames){
 			useBaseNames << p.name
 		}
