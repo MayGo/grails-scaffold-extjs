@@ -7,7 +7,7 @@ Ext.define('${appName}.model.${className}', {
 
     ScaffoldingHelper sh = new ScaffoldingHelper(domainClass, pluginManager, comparator, getClass().classLoader)
 	props = sh.getProps()
-	List useBaseNames=[]
+	List useDisplaynames=[]
 	for (p in props) {
 		if (p.embedded) {
 			def embeddedPropNames = p.component.persistentProperties*.name
@@ -17,23 +17,23 @@ Ext.define('${appName}.model.${className}', {
 		} else {
 			renderFieldForProperty(p, domainClass)
 		}
-		List basenames = config.grails.plugin.scaffold.core.basenames
-		if(p.name in basenames){
-			useBaseNames << p.name
+		List displaynames = config.grails.plugin.scaffold.core.displaynames
+		if(p.name in displaynames){
+			useDisplaynames << p.name
 		}
 	}
-	if(useBaseNames.size()>0){
+	if(useDisplaynames.size()>0){
 		%>
 		{
 			name : 'uniqueName',
 			type : 'string',
 			convert : function(newValue, model) {
 				var name = "";
-				<% useBaseNames.each{ basename-> %>
-				name += model.get('${basename}')+'${(basename == useBaseNames.last())?"":","}';<% } %>
+				<% useDisplaynames.each{ basename-> %>
+				name += model.get('${basename}')+'${(basename == useDisplaynames.last())?"":","}';<% } %>
 				return name;
 			},
-			depends: [<% useBaseNames.each{ basename-> %>'${basename}'${(basename == useBaseNames.last())?"":","}<% } %>]
+			depends: [<% useDisplaynames.each{ basename-> %>'${basename}'${(basename == useDisplaynames.last())?"":","}<% } %>]
 		}<%
 	}
 
