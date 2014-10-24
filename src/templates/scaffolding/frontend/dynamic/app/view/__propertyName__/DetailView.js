@@ -3,8 +3,8 @@
 %>
 
 <%  
-public String renderEditor(property){
-	String output = ""
+public String renderField(property, joinProperty){
+	
 	if (property.type == Boolean || property.type == boolean)
 	    output = renderBooleanEditor(domainClass, property)
 	else if (property.type && Number.isAssignableFrom(property.type) || (property.type?.isPrimitive() && property.type != boolean))
@@ -23,12 +23,13 @@ public String renderEditor(property){
 	    output = renderSelectTypeEditor("locale", domainClass, property)
 	else if (property.type == Currency)
 	    output = renderSelectTypeEditor("currency", domainClass, property)
-	else if (property.type==([] as Byte[]).class) //TODO: Bug in groovy means i have to do this :(
-	    output = renderByteArrayEditor(domainClass, property)
 	else if (property.type==([] as byte[]).class) //TODO: Bug in groovy means i have to do this :(
 	    output = renderByteArrayEditor(domainClass, property)
 	else if (property.manyToOne || property.oneToOne)
-	    output = renderManyToOne(domainClass, property)
+	    output = renderManyToOne(domainClass, property) 
+	else if (joinProperty){
+		output = renderJoinProperty(domainClass, property, joinProperty)
+	}
 	else if ((property.oneToMany && !property.bidirectional) || property.manyToMany) {
 	    output = renderManyToMany(domainClass, property)
 	}
@@ -42,30 +43,30 @@ public String renderEditor(property){
 
 private renderEnumEditor(domainClass, property) {
 	return """
-			xtype : 'combo',
-			store : ${(property.type.values()*.name()).collect{"'$it'"}}
+				xtype : 'combo',
+				store : ${(property.type.values()*.name()).collect{"'$it'"}}
 		"""
 }
 
 private String renderStringEditor(domainClass, property) {
 	return """
-			xtype : 'textfield'
+				xtype : 'textfield'
 	"""
 }
 
 private renderByteArrayEditor(domainClass, property) {
     return """
-			xtype : 'filefield'
+				xtype : 'filefield'
 		"""
 }
 
 private String renderManyToOne(domainClass,property) {
     if (property.association) {
 		return  """
-			xtype : 'combo',//ManyToOne
-			valueField: 'id',
-			displayField: 'uniqueName',
-			store: {type:'${grails.util.GrailsNameUtils.getShortName(property.type).toLowerCase()}-liststore'},
+				xtype : 'combo',//ManyToOne
+				valueField: 'id',
+				displayField: 'uniqueName',
+				store: {type:'${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-liststore'},
 		"""
     }else{
     	return "//renderManyToOne not association"
@@ -74,39 +75,64 @@ private String renderManyToOne(domainClass,property) {
 
 private renderManyToMany(domainClass, property) {
 	return  """
-	        xtype: 'tagfield',//ManyToMany
-	        store: {type:'${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-liststore'},
-	        displayField: 'uniqueName',
-	        valueField: 'id'
-	/*	
-	        xtype: 'multiselector',
-	        title: 'Yksuss',
-	        bind:{
-	        	store:{
-	                bindTo:'{theDomainObject.yksuss}',//Not binding
-	                deep:true
-	        	}
-            },
-	        fieldName: 'uniqueName',
-	        viewConfig: {
-	            deferEmptyText: false,
-	            emptyText: 'No employees selected'
-	        },
-	        search: {
-	            field: 'uniqueName',
-	            store: {type:'${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-liststore'},
-	        }
+		        xtype: 'tagfield',//ManyToMany
+		        store: {type:'${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-liststore'},
+		        displayField: 'uniqueName',
+		        valueField: 'id'
+		/*	
+		        xtype: 'multiselector',
+		        title: 'Yksuss',
+		        bind:{
+		        	store:{
+		                bindTo:'{theDomainObject.yksuss}',//Not binding
+		                deep:true
+		        	}
+	            },
+		        fieldName: 'uniqueName',
+		        viewConfig: {
+		            deferEmptyText: false,
+		            emptyText: 'No employees selected'
+		        },
+		        search: {
+		            field: 'uniqueName',
+		            store: {type:'${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-liststore'},
+		        }
 	    */
+		"""
+}
+
+private renderJoinProperty(domainClass, property, joinProperty) {
+	return  """
+				xtype: 'joinproperty-multiselector',
+				title: '${property.naturalName}',
+				fieldName: 'uniqueName',
+				relFieldName: 'grupp',
+			
+				viewModel: {
+					type: '${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-embedded-listviewmodel',
+					data:{
+						referencedPropertyName:'${property.getReferencedPropertyName()}.id'
+					},
+				},
+			   
+				bind:{
+					store:'{listStore}'
+				},
+			   
+				search:{
+					store: {type:'${grails.util.GrailsNameUtils.getShortName(joinProperty.getReferencedPropertyType()).toLowerCase()}-liststore'},
+					field: 'uniqueName',
+				}
 		"""
 }
 
 private renderOneToMany(domainClass, property) {
 	return  """
-			xtype : 'combo',//OneToMany
-			valueField: 'id',
-			displayField: 'uniqueName',
-			multiSelect: true,
-			store: {type:'${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-liststore'},
+				xtype : 'tagfield',//OneToMany
+				valueField: 'id',
+				displayField: 'uniqueName',
+				multiSelect: true,
+				store: {type:'${grails.util.GrailsNameUtils.getShortName(property.getReferencedPropertyType()).toLowerCase()}-liststore'},
 		"""
 }
 
@@ -138,21 +164,21 @@ private renderNumberEditor(domainClass, property) {
 
 private renderBooleanEditor(domainClass, property) {
      return """
-			xtype : 'checkbox'
+				xtype : 'checkbox'
 		"""
 }
 
 private renderDateEditor(domainClass, property) {
      return """ 	
-			xtype : 'datefield',
-	 		format: 'Y-m-d',
+				xtype : 'datefield',
+		 		format: 'Y-m-d',
 		"""
 }
 
 private renderSelectTypeEditor(type, domainClass,property) {
 	return """
-			xtype : 'combo',
-			store : []
+				xtype : 'combo',
+				store : []
 		"""
 
 }
@@ -210,12 +236,21 @@ Ext.define('${appName}.view.${domainClass.propertyName}.DetailView', {
 				cp = owningClass.constrainedProperties[property.name]
 				required = (cp ? !(cp.propertyType in [boolean, Boolean]) && !cp.nullable : false)
 			}
+			// Find if property is actually joinTable property. e.g. UserRole
+			def joinProperty 
+			if(property.referencedDomainClass)	{
+				def pp = property.referencedDomainClass.persistentProperties
+				joinProperty = pp.find{ 
+					it != property && 
+					pp.size() == 2 && it.referencedDomainClass 
+				}
+			}
 			%>
 			{
         		fieldLabel: '${property.naturalName}',
         		itemId: '${property.name}',
-                bind: '{theDomainObject.${property.name}}',\
-                ${renderEditor(property)}\
+                <% if(!joinProperty){ %> bind: '{theDomainObject.${property.name}}',<% } %>
+                ${renderField(property, joinProperty)}
 			},
 		<%  } %>        
 		]

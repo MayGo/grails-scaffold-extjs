@@ -3,11 +3,10 @@
 %>
 Ext.define('${appName}.model.${className}', {
 	extend : '${appName}.model.Base',
-	fields : [<%  
-
-    ScaffoldingHelper sh = new ScaffoldingHelper(domainClass, pluginManager, comparator, getClass().classLoader)
+	fields : [\
+<%  ScaffoldingHelper sh = new ScaffoldingHelper(domainClass, pluginManager, comparator, getClass().classLoader)
 	props = sh.getProps()
-	List useDisplaynames=[]
+	Map useDisplaynames=[:]
 	for (p in props) {
 		if (p.embedded) {
 			def embeddedPropNames = p.component.persistentProperties*.name
@@ -17,27 +16,48 @@ Ext.define('${appName}.model.${className}', {
 		} else {
 			renderFieldForProperty(p, domainClass)
 		}
-		List displaynames = config.grails.plugin.scaffold.core.displaynames
-		if(p.name in displaynames){
-			useDisplaynames << p.name
+		List defaultDisplayNames = config.grails.plugin.scaffold.core.defaultDisplayNames
+		if(p.name in defaultDisplayNames){
+			useDisplaynames[p.name]=null
 		}
+		
 	}
-	if(useDisplaynames.size()>0){
-		%>
+	Map displayNames = config.grails.plugin.scaffold.core.displayNames
+	if(displayNames.containsKey(className)){
+		useDisplaynames << displayNames[className]
+	}
+	String useDisplaynamesStr = useDisplaynames.collect{key, value->"'" + key + "'"}.join(",")
+%>\
+<% 
+// Generate uniqueName convert function based on displayNames config
+if(useDisplaynames.size()>0){%>\
 		{
 			name : 'uniqueName',
 			type : 'string',
 			convert : function(newValue, model) {
-				var name = "";
-				<% useDisplaynames.each{ basename-> %>
-				name += model.get('${basename}')+'${(basename == useDisplaynames.last())?"":","}';<% } %>
+				var name = "";\
+	<% useDisplaynames.each{ baseNameKey, baseNameValue-> %>\
+		<% if(baseNameValue){%>\
+				var field = model.get('${baseNameKey}')
+			  <% baseNameValue.each{subBasename-> %>\
+				if(field.\$className){// is class
+					name += field.get('${subBasename}');
+				}else{// is map 
+					name += field['${subBasename}'];
+				}
+				name += ' ';
+			 <%}%>\
+		<% }else{ %>
+				name += model.get('${baseNameKey}');
+				name += ' ';
+		<%}%>\
+	<%}%>\
 				return name;
 			},
-			depends: [<% useDisplaynames.each{ basename-> %>'${basename}'${(basename == useDisplaynames.last())?"":","}<% } %>]
-		}<%
-	}
-
-
+			depends: [${useDisplaynamesStr}]
+		}\
+<%}%>\
+<%
 private renderFieldForProperty(property, owningClass, prefix = "") {
 	boolean hasHibernate = pluginManager?.hasGrailsPlugin('hibernate') || pluginManager?.hasGrailsPlugin('hibernate4')
 	boolean required = false

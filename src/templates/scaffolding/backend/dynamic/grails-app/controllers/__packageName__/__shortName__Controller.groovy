@@ -14,12 +14,24 @@ class ${className}Controller extends RestfulController{
 		super(${className}, false /* read-only */)
 	}
 	
-	def index(Integer max) {
+	
+	def show() {
+		// We pass which fields to be rendered with the includes attributes,
+		// we exclude the class property for all responses.
+		respond queryForResource(params.id), [includes: includeFields, excludes: ['class']]
+	}
+	 
+	def index(final Integer max) {
 		params.max = Math.min(max ?: 10, 100)
-		
-		// Parses params.query for dynamic search and uses params.offset/params.max for paging. Returns [list: results, total: results.totalCount] for paging grid.
+		// Parses params.query for dynamic search and uses params.offset/params.max for paging. Returns results for paging grid.
 		// This is here so running demo works right away. Should be replaced with own service, eg: ${domainClass.propertyName}Service.list(params)
-		def listObject = ScaffoldCoreService.parseParamsAndRetrieveListAndCount(resource, params)
-		respond listObject as Object
+		List results = ScaffoldCoreService.parseParamsAndRetrieveListAndCount(resource, params) 
+		header 'total', results.totalCount
+		
+		respond results, [includes: includeFields, excludes: ['class']]
+	}
+
+	private getIncludeFields() {
+		params.fields?.tokenize(',')
 	}
 }
