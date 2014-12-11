@@ -55,9 +55,9 @@ Ext.define('${appName}.view.BaseListController', {
     onSearchClick: function(){
 		var store = this.getViewModel().get('listStore');
 		var formPanel = this.lookupReference('listSearchForm')
-		var params = formPanel.getValues()
+		var values = formPanel.getValues()
 		store.load({
-			params:params
+			params:{'filter':Ext.util.JSON.encode(values)}
 		});
     }
 
