@@ -8,7 +8,7 @@ Ext.define('${appName}.view.login.LoginController', {
 		var form = loginBtn.up('form').getForm();
 		// Can't use form.submit({..}), because rest login succes does not return success:true parameter
 		Ext.Ajax.request({
-            url: ${appName}.config.Runtime.getLoginUrl(),
+            url: ${appName}.config.Runtime.loginUrl,
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             params : Ext.JSON.encode(form.getValues()),

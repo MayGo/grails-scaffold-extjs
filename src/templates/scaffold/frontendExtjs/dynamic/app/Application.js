@@ -25,7 +25,7 @@ Ext.define('${appName}.Application', {
     launch: function () {
     	Ext.fly("loading").hide();
     	var loggedIn = false;
-    	if(${appName}.config.Runtime.getSecurityEnabled()){
+    	if(${appName}.config.Runtime.securityEnabled){
 			var supportsLocalStorage = Ext.supports.LocalStorage;
 	
 			if (!supportsLocalStorage) {
@@ -39,7 +39,7 @@ Ext.define('${appName}.Application', {
 			
 			if(profile.isLoggedIn()){
 				Ext.Ajax.request({
-		            url: ${appName}.config.Runtime.getValidationUrl(),
+		            url: ${appName}.config.Runtime.validationUrl,
 		            method: 'POST',
 		            success: function(response, options) {
 		            	Ext.widget('app-main')

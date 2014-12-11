@@ -31,7 +31,7 @@ Ext.define('${appName}.model.Base', {
 		proxy : {
 			type : 'rest',
 			
-			url : ${appName}.config.Runtime.getApplicationUrl() +'/{entityName:lowercase}s',
+			url : ${appName}.config.Runtime.restUrl +'/{entityName:lowercase}s',
 			reader: {
 			    rootProperty : 'list',
 			    totalProperty  : 'total'
