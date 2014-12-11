@@ -43,10 +43,9 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build(":release:3.0.1",
-              ":rest-client-builder:1.0.3") {
+        build(":release:3.0.1") {
             export = false
         }
-	    compile ':scaffold-core:0.1'
+		compile ":scaffold-angular:0.3.15"
     }
 }

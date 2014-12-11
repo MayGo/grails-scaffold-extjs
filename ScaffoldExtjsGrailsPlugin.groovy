@@ -1,7 +1,7 @@
 import grails.plugin.scaffold.core.ConfigUtility
 
 class ScaffoldExtjsGrailsPlugin {
-    def version = "0.1"
+    def version = "0.3"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.4 > *"
 
@@ -29,7 +29,7 @@ Grails plugin for generating working demo with ExtJS frontend and REST backend.
 
     def doWithSpring = {
 		ConfigUtility.mergeDefaultConfig(application, 'ScaffoldExtjsDefaultConfig')
-		templatesLocator(grails.plugin.scaffold.core.DefaultTemplatesLocator, "scaffold-extjs")
+		extjsTemplatesLocator(grails.plugin.scaffold.core.DefaultTemplatesLocator, "scaffold-extjs")
 	}
 
 }
