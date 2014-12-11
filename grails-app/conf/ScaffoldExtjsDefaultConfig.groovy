@@ -2,7 +2,7 @@ grails{
 	plugin{
 		scaffold{
 			core{
-				folders = ['backend':'', 'frontend':'extjs/']
+				folders = ['backend':'', 'frontendExtjs':'extjs/']
 			}
 		}
 	}
