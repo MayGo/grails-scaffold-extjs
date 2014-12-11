@@ -27,7 +27,6 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
-      
         mavenLocal()
 		grailsCentral()
         mavenCentral()
@@ -46,6 +45,6 @@ grails.project.dependency.resolution = {
         build(":release:3.0.1") {
             export = false
         }
-		compile ":scaffold-angular:0.3.15"
+		compile ":scaffold-angular:0.3.19"
     }
 }

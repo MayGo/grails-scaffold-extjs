@@ -4,6 +4,11 @@ Grails plugin for generating working demo with ExtJS frontend and REST backend.
 
 Creating demo
 ======
+Need to override scaffolding config:
+add to Config.groovy
+
+grails.plugin.scaffold.core.folders = ['backend':'', 'frontendExtjs':'extjs/']
+
 command: grails createDemo
 
 Backend is generated with scaffold-angular plugin. So some manual edit is neccesary:
