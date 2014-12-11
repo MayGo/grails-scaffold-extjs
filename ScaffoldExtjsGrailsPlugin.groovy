@@ -1,7 +1,7 @@
 import grails.plugin.scaffold.core.ConfigUtility
 
 class ScaffoldExtjsGrailsPlugin {
-    def version = "0.5"
+    def version = "0.7"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.4 > *"
 

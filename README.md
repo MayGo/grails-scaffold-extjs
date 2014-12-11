@@ -13,7 +13,7 @@ command: grails createDemo
 
 Backend is generated with scaffold-angular plugin. So some manual edit is neccesary:
 In BuildConfig.groovy, edit line: include(name: "angular/client/**"), replace  include(name: "extjs/client/**")
-In bootstrap.groovy, there is no need for: scaffold.InternalFrontendHelper.writeAngularConfig()
+In bootstrap.groovy, change scaffold.InternalFrontendHelper.writeConfig('angular/client/') to scaffold.InternalFrontendHelper.writeConfig('extjs/')
 In UrlMappings.groovy replace dirserveBase = 'angular/client' with dirserveBase = 'extjs/client' 
 
 TODO

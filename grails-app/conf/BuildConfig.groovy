@@ -45,6 +45,6 @@ grails.project.dependency.resolution = {
         build(":release:3.0.1") {
             export = false
         }
-		compile ":scaffold-angular:0.3.19"
+		compile ":scaffold-angular:0.3.20"
     }
 }

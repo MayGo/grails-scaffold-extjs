@@ -39,14 +39,12 @@ Ext.define('${appName}.config.Runtime',{
 		
 		// Return correct config
 		var restUrl = this.appendSlash(this.defaultConfig.restUrl);
-		var config = {
-			restUrl : restUrl,
-			loginUrl : restUrl + this.removeSlash(this.defaultConfig.loginUrl),
-			logoutUrl : restUrl + this.removeSlash(this.defaultConfig.logoutUrl),
-			validationUrl: restUrl + this.removeSlash(this.defaultConfig.validationUrl),
-			securityEnabled : this.defaultConfig.securityEnabled,
-		};
-		this.initConfig(config);
+		
+        this.restUrl = restUrl;
+        this.loginUrl = restUrl + this.removeSlash(this.defaultConfig.loginUrl);
+        this.logoutUrl = restUrl + this.removeSlash(this.defaultConfig.logoutUrl);
+        this.validationUrl = restUrl + this.removeSlash(this.defaultConfig.validationUrl);
+        this.securityEnabled = this.defaultConfig.securityEnabled;
 	}
 	
 });
